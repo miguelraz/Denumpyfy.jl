@@ -6,7 +6,24 @@ using Test
     @test replace_exponents(str)  == "x ^ 2"
 
     str = "range(0, self.n_grid):"
-    @test replace_range(str) == "0:self.n_grid"
+    @test replace_range(str) == "1:self.n_grid"
+    str = "range(0, 1):"
+    @test replace_range(str) == "1:2"
+    str = "range(self.n_grid, 3):"
+    @test replace_range(str) == "self.n_grid:4"
+    str = "range(1, n_grid - 1):"
+    @test replace_range(str) == "2:n_grid-1"
+    str = "range(1, -1):"
+    @test replace_range(str) == "2:end"
+    str = "range(1, -2):"
+    @test replace_range(str) == "2:end-1"
+    str = "range(1, -3):"
+    @test replace_range(str) == "2:end-2"
+    str = "range(xs):"
+    @test replace_range(str) == "1:xs"
+
+    str = "len(xs)"
+    @test replace_len(str) == "length(xs)"
 
     str = "linspace(half_delta - x_out, x_out - half_delta, n_grid)"
     @test replace_linspace(str) == "LinRange(half_delta - x_out, x_out - half_delta, n_grid)"
@@ -34,4 +51,29 @@ using Test
     @test replace_ones(str) == "ones(n_grid, n_grid, n_grid)"
     str = "ones((n_grid, n_grid))"
     @test replace_ones(str) == "ones(n_grid, n_grid)"
+
+    str = "1 "
+    @test handle_indexing_arg(str) == "2"
+    str = "-1"
+    @test handle_indexing_arg(str) == "end"
+    str = " -2"
+    @test handle_indexing_arg(str) == "end-1"
+    strs = [" -2", "-1"]
+    @test handle_indexing_arg.(strs) == ["end-1", "end"]
+
+    strs = "alpha beta gamma sigma"
+    @test replace_greek(strs) == "α β γ σ"
+
+    str = "np.eye(5)"
+    @test replace_eye(str) == "np.I(5)"
+
+    str = "[0]"
+    #@test replace_indexing(str) == "[1]"
+    str = "[-1, n_grid, rho]"
+    #@test replace_indexing(str) == "[end,n_grid,rho]"
+
+    # Test multiple repeated indexes :D
+    str = "ax[0] = ax[3,4] + x[3,4] + y[-1,y,5]"
+    @test replace_indexing(str) == "ax[begin] = ax[4,5] + x[4,5] + y[end,y,6]"
 end
+
