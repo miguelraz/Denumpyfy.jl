@@ -4,7 +4,7 @@ I hate translating numpy notebooks to Julia.
 
 I then spent [about 2 afternoons packing 20 regexes in to a trenchcoat](https://xkcd.com/1205/) and calling it a Julia package so that others may join me in not fiddling with indexing of nasty, nasty "vectorized" code.
 
-My code is quite naive - it tries to be a bit smart about line by line regex replacing, and doesn't really handle global context or `self` rewriting - yet.
+My code is quite naive - it tries to be a bit smart about line by line regex replacing, and doesn't really handle global context or `self` rewriting - and likely won't. It was written with **replacing tutorial numpy notebook tutorials in mind**. If you are looking for something that is much more robust/heavy duty, please check out [Py2Jl.jl -> py2many](https://github.com/adsharma/py2many). You can compare `Denumpyfy.jl` vs `py2many` with `puncture.jl` vs `tests/demopy2many.jl`, respectively. At time of writing, their AST parser is an unfinished copy/paste from their Rust transpiler, so please help out by filing PRs/issues over there.
 
 Use entirely at your own risk, and see some of the `tests/runtests.jl` to see what the package can help you out with.
 

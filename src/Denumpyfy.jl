@@ -132,7 +132,7 @@ end
 
 #l_x px_x
 
-replacements! = [
+const replacements! = [
     replace_exponents,
     replace_range,
     replace_len,
