@@ -10,34 +10,44 @@ function replace_range(str)
     isempty(str) && return str
     !occursin(r"range\(", str) && return str
     caps = match(r"range\((.*)\):$", str).captures[1]
-    caps = filter(!isspace, caps)
+    #caps = filter(!isspace, caps)
 
     # Handle single argument case by checking for existence of a comma
     # TODO Assume there is a `len` call?
     !occursin(r",", caps) && return string("1:", caps)
+    for m in eachmatch(r"(range\((.+?)\):)", str, overlap = false)
+        #cap = (m.match)[2:end-1] # get the stuff inside the [...]
+        splits = split(m.captures[2], ',')
+        args = handle_indexing_arg.(splits, false)
+        #idx = "range(" * join(idx, ',') * ')'
+        args = join(args, ':')
+        str = replace(str, m.captures[1] => args)
+    end
+    str
+end
 
     # Try and be smart about 1-based indexing
-    first, second = split(caps, ',')
+    # first, second = split(caps, ',')
 
-    # Handle either one being a positive digit and make it 1-based index
-    if all(isdigit, first)
-        first = parse(Int, first) + 1
-    end
-    if all(isdigit, second)
-        second = parse(Int, second) + 1
-    end
-    if second == "-1"
-        second = "end"
-    end
-    if second == "-2"
-        second = "end-1"
-    end
-    if second == "-3"
-        second = "end-2"
-    end
-    # If you need more may the lord have mercy on your code 
-    return string(first,':', second)
-end
+    # # Handle either one being a positive digit and make it 1-based index
+    # if all(isdigit, first)
+    #     first = parse(Int, first) + 1
+    # end
+    # if all(isdigit, second)
+    #     second = parse(Int, second) + 1
+    # end
+    # if second == "-1"
+    #     second = "end"
+    # end
+    # if second == "-2"
+    #     second = "end-1"
+    # end
+    # if second == "-3"
+    #     second = "end-2"
+    # end
+    # # If you need more may the lord have mercy on your code 
+    # return string(first,':', second)
+#end
 
 replace_eye(str) = replace(str, "eye(" => "I(")
 
@@ -46,20 +56,31 @@ replace_eye(str) = replace(str, "eye(" => "I(")
 # 1, 2 => 1,2
 # -1, ngrid - 1 => end,ngrid-1
 # 0, 1 => 1,2
-function handle_indexing_arg(str)
+function handle_indexing_arg(str, ignore_range = true)
         str = filter(!isspace, str)
         # Special case "0"
-        str == "0" && return "begin"
+        if ignore_range
+            str == "0" && return "begin"
+        else
+            str == "0" && return "1"
+        end
         # If is all digits, bump
         all(isdigit, str) && return string(parse(Int, str) + 1)
         # if uses "-1" or some other negative integer
-        str == "-1" && return "end"
-        str == "-2" && return "end-1"
-        str == "-3" && return "end-2"
-        str == "-4" && return "end-3"
-        str == "-5" && return "end-4"
-        str == "-6" && return "end-5"
-        str == "-7" && return "end-6"
+
+        # TODO add range(1, n_grid - 1): cases
+        if ignore_range
+            str == "-1" && return "end"
+            str == "-2" && return "end-1"
+            str == "-3" && return "end-2"
+            str == "-4" && return "end-3"
+            str == "-5" && return "end-4"
+            str == "-6" && return "end-5"
+            str == "-7" && return "end-6"
+        else
+            # lop off the -1 at the end
+            endswith(str, "-1") && return str[begin:end-2]
+        end
         str
 end
 
@@ -108,6 +129,8 @@ function replace_greek(str)
     end
     str
 end
+
+#l_x px_x
 
 replacements! = [
     replace_exponents,
