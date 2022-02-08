@@ -28,7 +28,7 @@ There's `replace` rules for array indexing (with 1-index bumping), some ascii ->
 
 TL;DR:
 
-![You should be sponsoring me not reading this](https://imgflip.com/i/64gwe0 "No more need for vectorized code")
+![You should be sponsoring me not reading this](friendshipendedwithnumpy.jpg "No more need for vectorized code")
 
 -----
 
