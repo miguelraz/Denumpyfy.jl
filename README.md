@@ -20,7 +20,7 @@ will be turned into this with `denumpyfy("puncture.py")`
 for i in 1:self.n_grid
     for j in 1:self.n_grid
         for k in 1:self.n_grid
-            Δ_x end-2k, end-2k = x[i, end] ^ 2 + y[j, end-1] ^ 2 + z[k, end-2] ^ 2
+            Δ_x = x[i, end] ^ 2 + y[j, end-1] ^ 2 + z[k, end-2] ^ 2
 ```
 in a new file `puncture.jl`.
 
